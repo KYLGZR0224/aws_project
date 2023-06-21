@@ -10,3 +10,5 @@ terraform {
     encrypt        = true
   }
 }
+
+#s3에는 backend가 주석 처리 되어있었음
