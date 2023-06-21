@@ -26,11 +26,11 @@ resource "aws_subnet" "aws15_public_subnet2a" {
 # 퍼블릭 서브넷 2c
 resource "aws_subnet" "aws15_public_subnet2c" {
     vpc_id = aws_vpc.aws15_vpc.id
-	cidr_block = var.public_subnet[1]
+	cidr_block = var.public_subnet[1]                  #for 나 count로 활용해서 한번 해보세요
 	availability_zone = var.azs[1]
 
 	tags = {
-	  Name = "aws15-public-subnet2c"
+	  Name = "aws15-public-subnet2c"                   # $ 활용해서 한번 해보세요
 	}
 }
 
@@ -55,3 +55,99 @@ resource "aws_subnet" "aws15_private_subnet2c" {
 	  Name = "aws15-private-subnet2c"
 	}
 }
+
+
+# 인터넷 게이트웨이 만들기 a.k.a igw
+
+resource "aws_internet_gateway" "aws15_igw" {
+  vpc_id = aws_vpc.aws15_vpc.id
+
+  tags = {
+	Name = "aws15-Internet-gateway"
+  }
+}
+
+# NAT 게이트웨이 때문에 엘라스틱 아이피 a.k.a. 탄력적 아이피 만들어본다
+
+resource "aws_eip" "aws15_eip" {
+  vpc = true
+  depends_on = [ "aws_internet_gateway.aws15_igw" ]
+  lifecycle {
+	create_before_destroy = true     #eip를 어떤식으로 제거 할 것인가
+  }
+}
+
+
+# NAT 게이트웨이 만들기
+# NAT 게이트웨이가 붙으면 엘라스틱 아이피를 만들어줘야 함
+
+resource "aws_nat_gateway" "aws15_nat" {
+  allocation_id = aws_eip.aws15_eip.id
+  # NAT를 생성할 서브넷 위치 ↓
+  subnet_id = aws_subnet.aws15_public_subnet2a.id
+  depends_on = [ "aws_internet_gateway.aws15_igw" ]
+}
+
+# aws에 vpc를 생성하면 자동으로 라우팅 테이블이 하나 생김
+# aws_default_route_tableㅇ 은 라우팅 테이블을 만들지 않고 VPC가 만듬
+# 기본 라우팅 테이블을 가져와서 테라폼이 관리할 수 있게 한다.
+
+
+resource "aws_default_route_table" "aws15_public_rt" {
+   default_route_table_id = aws_vpc.aws15_vpc.default_route_table_id
+
+  route {
+	cidr_block = "0.0.0.0/0"
+	gateway_id = aws_internet_gateway.aws15_igw.id
+  }
+  tags = {
+	Name = "aws15 public route table"
+  }
+}
+
+
+#디폴트 라우터를 퍼블릭 서브넷에 연결
+resource "aws_route_table_association" "aws15_public_rta_2a" {
+  subnet_id = aws_subnet.aws15_public_subnet2a.id
+  route_table_id = aws_default_route_table.aws15_public_rt.id
+}
+
+resource "aws_route_table_association" "aws15_public_rta_2c" {
+  subnet_id = aws_subnet.aws15_public_subnet2c.id
+  route_table_id = aws_default_route_table.aws15_public_rt.id
+}
+
+# 프라이빗 라우트 생성
+
+resource "aws_route_table" "aws15_private_rt" {
+  vpc_id = aws_vpc.aws15_vpc.id
+  tags = {
+	Name = "aws15 private route table"
+  }
+}
+
+
+#프라이빗 라우터를 프라이빗 서브넷에 연결
+resource "aws_route_table_association" "aws15_private_rta_2a" {
+  subnet_id = aws_subnet.aws15_private_subnet2a.id
+  route_table_id = aws_route_table.aws15_private_rt.id
+}
+
+resource "aws_route_table_association" "aws15_private_rta_2c" {
+  subnet_id = aws_subnet.aws15_private_subnet2c.id
+  route_table_id = aws_route_table.aws15_private_rt.id
+}
+
+
+# 프라이빗 라우트를 NAT 게이트웨이에 연결
+resource "aws_route" "aws15_private_rt_table" {
+  route_table_id = aws_route_table.aws15_private_rt.id
+  destination_cidr_block = "0.0.0.0/0"
+  nat_gateway_id = aws_nat_gateway.aws15_nat.id
+}
+
+#보안 그룹 만들시 VPC 필요/ 서브넷 필요 x
+# 인스턴스 만들시 vpc 서브넷 필요
+
+# 다른 상태 코드는 아웃풋으로 된 것만 가져올 수 있음
+# 상태 코드를 땡겨올 때 모든 걸 가져올 수는 없고 아웃풋 한거만 가져올 수 있다 이말임
