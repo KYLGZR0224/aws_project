@@ -1,0 +1,11 @@
+### asdf - 멀티 런타임 관리도구
+
+- 여러 언어의 런타임 버전들을 한개의 CLI로 묶어서 사용
+
+ㅤ→ nvm + rbenv + pyenv + gvm..
+
+- Ruby, Node.js, .Net Core 를 포함 약 280개 언어/환경을 플러그인으로 지원
+- 한개의 글로벌 설정파일로 관리하며, 기존 설정파일 읽어서 이관 가능
+- 폴더 변경시 자동 런타임 변경
+- Bash/Zsh/Fish 용 쉘 자동완성 지원
+- gcloud, aws iam, gradle, hasura, kubectl, mysql 등 다양한 CLI 들도 지원

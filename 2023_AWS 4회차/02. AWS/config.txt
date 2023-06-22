@@ -1,0 +1,36 @@
+# 윈도우에서 작업
+# C:\사용자\계정\.ssh 에 위치
+Host bastion
+    Hostname 퍼블릭IP
+    User ec2-user
+    IdentityFile ~/.ssh/키.pem
+
+Host web01
+    Hostname 프라이빗IP
+    User ec2-user
+    IdentityFile ~/.ssh/키.pem
+    ProxyCommand ssh.exe bastion -W %h:%p
+
+Host web02
+    Hostname 프라이빗IP
+    User ec2-user
+    IdentityFile ~/.ssh/키.pem
+    ProxyCommand ssh.exe bastion -W %h:%p
+
+# 리눅스에서 사용
+Host bastion
+    Hostname 퍼블릭IP
+    User ec2-user
+    IdentityFile ~/.ssh/키.pem
+
+Host web01
+    Hostname 프라이빗IP
+    User ec2-user
+    IdentityFile ~/.ssh/키.pem
+    ProxyJump bastion
+
+Host web02
+    Hostname 프라이빗IP
+    User ec2-user
+    IdentityFile ~/.ssh/키.pem
+    ProxyJump bastion

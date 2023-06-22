@@ -1,0 +1,10 @@
+known_hosts : 서버가 클라이언트에 보내는 공개키
+authorized_key : 클라이언트가 서버에 보내는 공개키
+
+ssh-keygen : 공개키/개인키 만드는 명령어
+사용예) ssh-keygen -t rsa
+결과) .ssh 디렉토리에 id_rsa와 id_rsa.pub 파일이 생성됨
+
+ssh-copy-id : 공개키를 서버로 전송하는 명령어
+사용예) ssh-copy-id ubuntu@192.168.56.115
+결과) 서버의 .ssh 디렉토리에 authorized_keys 파일이 생성됨

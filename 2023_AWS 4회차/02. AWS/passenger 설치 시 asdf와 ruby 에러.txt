@@ -1,0 +1,8 @@
+asdf가 없다고 하면
+# git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.9.0
+# echo . $HOME/.asdf/asdf.sh >> ~/.bashrc
+# source ~/.bashrc
+
+ruby가 없다고 하면 ruby를 root권한으로 재설치
+# asdf plugin add ruby
+# asdf install ruby 3.1.1

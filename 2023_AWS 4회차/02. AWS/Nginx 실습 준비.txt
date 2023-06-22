@@ -1,0 +1,59 @@
+1. 오전에 생성한 VPC등을 모두 삭제하세요.
+2. VirtualBox의 Client는 전원 Off합니다.
+
+3. VMWare를 실행해서 아래의 작업을 진행합니다.
+ - VM이름: 
+     - DNS, WEB01, WEB02, Nginx : 최소설치
+     - centos_Client : 서버-GUI
+ - 네트워크 : NAT
+ - 운영체제 : CentOS 7
+ - 계정이름 : centos
+
+4. 설치 후 작업(root로 로그인)
+yum update -y ; yum upgrade -y
+yum install vim -y
+
+5. centos 계정에 sudo 권한 부여
+chmod +w /etc/sudoers
+vim /etc/sudoers
+....
+100번째줄 정도에
+root     ALL=(ALL)    ALL
+centos   ALL=(ALL)    ALL
+
+:wq
+
+chmod -w /etc/sudoers
+
+6. 재부팅 - reboot
+
+7. 고정 IP설정
+DNS : 192.168.1.5
+Nginx : 192.168.1.6
+WEB01 : 192.168.1.10
+WEB02 : 192.168.1.11
+Client : 192.168.1.128
+
+sudo vim /etc/sysconfig/network-scripts/ifcfg-ens33
+ONBOOT=yes
+BOOTPROTO=static
+IPADDR=192.168.1.xxx
+NETMASK=255.255.255.0 or PREFIX=24
+GATEWAY=192.168.1.2
+DNS1=8.8.8.8
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
