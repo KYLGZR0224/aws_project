@@ -1,0 +1,95 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# 현재의 파일이 ruby 인 것을 인식하도록 하는 호환코드
+# 만약에 virtualbox guestad... /mnt 오류가 나면
+# vagrant 2.3.7 삭제하고 vagrant 2.3.3 설치 후 아래 작업 수행
+# vagrant plugin uninstall vagrant-vbguest
+# vagrant plugin install vagrant-vbguest 
+
+# CentOS Node #
+#=============#
+#Ansible-Node01#
+
+# 처음에 버추얼박스 게스트 에디션 설치 안됐었음
+
+# config.vm.define : vagrant 명령어를 사용할 때 이용될 tag
+Vagrant.configure("2") do |config|
+  #config.vm.boot_timeout = 1800 # 30분 타임아웃 에러 안나게 하는 것
+  config.vm.define "ansible-node01" do |cfg|
+    cfg.vm.box = "centos/7"                 # 프로비저닝 할 운영체제를 선택  box가 aws에서 ami
+    cfg.vm.provider "virtualbox" do |vb|
+      vb.name = "Ansible-Node01"   # 가상머신 이름 지정
+    end
+    cfg.vm.host_name = "ansible-node01"    # 가상 머신 Hostname 지정
+    cfg.vm.network "private_network", ip: "192.168.56.11"  # 네트워크 지정
+    cfg.vm.network "forwarded_port", guest: 22, host: 60011, auto_correct: true, id: "ssh"
+    # 호스트와 사용하게 될 공유폴더 지정
+    cfg.vm.synced_folder "..data", "/vagrant", disabled: true
+    cfg.vm.provision "shell", path: "bash_ssh_conf_4_CentOS.sh"
+    #cfg.vm.provision "shell", inline: "yum install epel-release -y"  #패키지 저장소 추가
+    #cfg.vm.provision "shell", inline: "yum install ansible -y" 
+    #cfg.vm.provision "file", source: "ansible_env_ready.yml", destination: "ansible_env_ready.yml"
+    #cfg.vm.provision "shell", inline: "ansible-playbook ansible_env_ready.yml"
+    # 뭔가를 추가하려면 프로비전 해야함
+    # 앤서블에서 yml 파일을 실행하는 명령어는 ansible-playbook 이다
+  end
+end
+
+#Ansible-Node02#
+
+Vagrant.configure("2") do |config|
+  #config.vm.boot_timeout = 1800 # 30분 타임아웃 에러 안나게 하는 것
+  config.vm.define "ansible-node02" do |cfg|
+    cfg.vm.box = "centos/7"                 # 프로비저닝 할 운영체제를 선택  box가 aws에서 ami
+    cfg.vm.provider "virtualbox" do |vb|
+      vb.name = "Ansible-Node02"   # 가상머신 이름 지정
+    end
+    cfg.vm.host_name = "ansible-node02"    # 가상 머신 Hostname 지정
+    cfg.vm.network "private_network", ip: "192.168.56.12"  # 네트워크 지정
+    cfg.vm.network "forwarded_port", guest: 22, host: 60012, auto_correct: true, id: "ssh"
+    cfg.vm.synced_folder "..data", "/vagrant", disabled: true
+    cfg.vm.provision "shell", path: "bash_ssh_conf_4_CentOS.sh"
+  end
+end
+
+#Ansible-Node03#
+
+Vagrant.configure("2") do |config|
+  #config.vm.boot_timeout = 1800 # 30분 타임아웃 에러 안나게 하는 것
+  config.vm.define "ansible-node03" do |cfg|
+    cfg.vm.box = "centos/7"                 # 프로비저닝 할 운영체제를 선택  box가 aws에서 ami
+    cfg.vm.provider "virtualbox" do |vb|
+      vb.name = "Ansible-Node03"   # 가상머신 이름 지정
+    end
+    cfg.vm.host_name = "ansible-node03"    # 가상 머신 Hostname 지정
+    cfg.vm.network "private_network", ip: "192.168.56.13"  # 네트워크 지정
+    cfg.vm.network "forwarded_port", guest: 22, host: 60013, auto_correct: true, id: "ssh"
+    cfg.vm.synced_folder "..data", "/vagrant", disabled: true
+    cfg.vm.provision "shell", path: "bash_ssh_conf_4_CentOS.sh"
+  end
+end
+
+
+
+#==================#
+# Ansible Server #
+#==================#
+
+Vagrant.configure("2") do |config|
+  #config.vm.boot_timeout = 1800 # 30분 타임아웃 에러 안나게 하는 것
+  config.vm.define "ansible-server" do |cfg|
+    cfg.vm.box = "centos/7"                 
+    cfg.vm.provider "virtualbox" do |vb|
+      vb.name = "Ansible-Server"   
+    end
+    cfg.vm.host_name = "ansible-server"    
+    cfg.vm.network "private_network", ip: "192.168.56.10"  
+    cfg.vm.network "forwarded_port", guest: 22, host: 60010, auto_correct: true, id: "ssh"
+    cfg.vm.synced_folder "..data", "/vagrant", disabled: true
+    cfg.vm.provision "shell", inline: "yum install epel-release -y"  
+    cfg.vm.provision "shell", inline: "yum install ansible -y" 
+    cfg.vm.provision "file", source: "ansible_env_ready.yml", destination: "ansible_env_ready.yml"
+    cfg.vm.provision "shell", inline: "ansible-playbook ansible_env_ready.yml"
+  end
+end
