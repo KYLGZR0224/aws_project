@@ -7,9 +7,10 @@
 # vagrant plugin uninstall vagrant-vbguest
 # vagrant plugin install vagrant-vbguest 
 
-# CentOS Node #
-#=============#
-#Ansible-Node01#
+### CentOS Node ####
+####################
+###Ansible-Node01###
+####################
 
 # 처음에 버추얼박스 게스트 에디션 설치 안됐었음
 
@@ -35,8 +36,9 @@ Vagrant.configure("2") do |config|
     # 앤서블에서 yml 파일을 실행하는 명령어는 ansible-playbook 이다
   end
 end
-
-#Ansible-Node02#
+####################
+###Ansible-Node02###
+####################
 
 Vagrant.configure("2") do |config|
   #config.vm.boot_timeout = 1800 # 30분 타임아웃 에러 안나게 하는 것
@@ -53,7 +55,9 @@ Vagrant.configure("2") do |config|
   end
 end
 
-#Ansible-Node03#
+####################
+###Ansible-Node03###
+####################
 
 Vagrant.configure("2") do |config|
   #config.vm.boot_timeout = 1800 # 30분 타임아웃 에러 안나게 하는 것
@@ -71,10 +75,9 @@ Vagrant.configure("2") do |config|
 end
 
 
-
-#==================#
-# Ansible Server #
-#==================#
+####################
+###Ansible Server###
+####################
 
 Vagrant.configure("2") do |config|
   #config.vm.boot_timeout = 1800 # 30분 타임아웃 에러 안나게 하는 것
