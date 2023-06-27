@@ -1,13 +1,13 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
-
+Vagrant.configure("2") do |config|
 # 현재의 파일이 ruby 인 것을 인식하도록 하는 호환코드
 # 만약에 virtualbox guestad... /mnt 오류가 나면
 # vagrant 2.3.7 삭제하고 vagrant 2.3.3 설치 후 아래 작업 수행
 # vagrant plugin uninstall vagrant-vbguest
 # vagrant plugin install vagrant-vbguest 
 
-### CentOS Node ####
+### CentOS Nodes ###
 ####################
 ###Ansible-Node01###
 ####################
@@ -15,8 +15,8 @@
 # 처음에 버추얼박스 게스트 에디션 설치 안됐었음
 
 # config.vm.define : vagrant 명령어를 사용할 때 이용될 tag
-Vagrant.configure("2") do |config|
-  #config.vm.boot_timeout = 1800 # 30분 타임아웃 에러 안나게 하는 것
+
+  config.vm.boot_timeout = 1800 # 30분 타임아웃 에러 안나게 하는 것
   config.vm.define "ansible-node01" do |cfg|
     cfg.vm.box = "centos/7"                 # 프로비저닝 할 운영체제를 선택  box가 aws에서 ami
     cfg.vm.provider "virtualbox" do |vb|
@@ -35,12 +35,12 @@ Vagrant.configure("2") do |config|
     # 뭔가를 추가하려면 프로비전 해야함
     # 앤서블에서 yml 파일을 실행하는 명령어는 ansible-playbook 이다
   end
-end
+
 ####################
 ###Ansible-Node02###
 ####################
 
-Vagrant.configure("2") do |config|
+
   #config.vm.boot_timeout = 1800 # 30분 타임아웃 에러 안나게 하는 것
   config.vm.define "ansible-node02" do |cfg|
     cfg.vm.box = "centos/7"                 # 프로비저닝 할 운영체제를 선택  box가 aws에서 ami
@@ -53,13 +53,13 @@ Vagrant.configure("2") do |config|
     cfg.vm.synced_folder "..data", "/vagrant", disabled: true
     cfg.vm.provision "shell", path: "bash_ssh_conf_4_CentOS.sh"
   end
-end
+
 
 ####################
 ###Ansible-Node03###
 ####################
 
-Vagrant.configure("2") do |config|
+
   #config.vm.boot_timeout = 1800 # 30분 타임아웃 에러 안나게 하는 것
   config.vm.define "ansible-node03" do |cfg|
     cfg.vm.box = "centos/7"                 # 프로비저닝 할 운영체제를 선택  box가 aws에서 ami
@@ -72,14 +72,14 @@ Vagrant.configure("2") do |config|
     cfg.vm.synced_folder "..data", "/vagrant", disabled: true
     cfg.vm.provision "shell", path: "bash_ssh_conf_4_CentOS.sh"
   end
-end
+
 
 
 ####################
 ###Ansible Server###
 ####################
 
-Vagrant.configure("2") do |config|
+
   #config.vm.boot_timeout = 1800 # 30분 타임아웃 에러 안나게 하는 것
   config.vm.define "ansible-server" do |cfg|
     cfg.vm.box = "centos/7"                 
@@ -94,5 +94,18 @@ Vagrant.configure("2") do |config|
     cfg.vm.provision "shell", inline: "yum install ansible -y" 
     cfg.vm.provision "file", source: "ansible_env_ready.yml", destination: "ansible_env_ready.yml"
     cfg.vm.provision "shell", inline: "ansible-playbook ansible_env_ready.yml"
+    cfg.vm.provision "shell", path: "add_ssh_auth.sh", privileged: false
   end
 end
+
+# 가상환경에 직접 접속하지 않고 설정을 하려고 지금 이러고 있는 거다
+# 한줄짜리 명령어는 inline으로 명령을 줬다
+# sh 파일은 명령 안에 있는 명령 자체를 날려버리고
+# yml 파일은 파일을 윈도에서 앤서블 서버로 복사한 다음 ansible-playbook으로 앤서블 서버에서 실행
+# 왜냐하면 앤서블 프로그램이 리눅스에 설치되어 있고 리눅스에서만 앤서블 프로그램이 돌아가기 때문에
+# env_ready에 sshpass 설치 명령이 기입되어 있으므로 ass_ssh_auth.sh 명령은 그 다음의 순서가 되어야
+# 에러가 나지 않는다.
+# 프로비저닝도 단순하게 때려 넣는게 아니라 순서를 잘 잡아줘야 한다
+# 
+
+# 여기까지 앤서블 환경 잡아주는 것 (6월 27일 화요일 오전 11시 30분)
