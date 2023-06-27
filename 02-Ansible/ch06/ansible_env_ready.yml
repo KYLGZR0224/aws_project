@@ -8,20 +8,9 @@
       blockinfile:
         path: /etc/ansible/hosts
         block: | #파이프라인 표시는 이 모양 그대로 넣는다는 뜻
-          [CentOS]
-          192.168.56.11
-          192.168.56.12
-          192.168.56.13
-          [Ubuntu]
-          192.168.56.14
-          192.168.56.15
-          192.168.56.16
-          
-    - name: Install sshpass for Authentication
-      yum:
-        name: sshpass
-        state: present
-
+          [nodes]
+          192.168.56.[11:16]
+        
     - name: Create vim env's directories & files
       shell: "{{ item }}"
       with_items:
