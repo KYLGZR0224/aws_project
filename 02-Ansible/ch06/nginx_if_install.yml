@@ -9,3 +9,14 @@
   tasks:
     - name: nginx for any linux
       include tasks: "{{ lnx_name }}.yml"
+
+  handlers:
+    - name: restart nginx web server
+      service: name=nginx state=restarted
+
+  # 핸들러는 변경사항이 없으면 따로 실행이라는 작업을 하지 않는다
+  # 변경된 사항이 있는지 없는지 핸들러가 감시를 하는 상태에서 
+  # 변경된 사항이 있어야지만 핸들러가 systemctl의 개념으로는 재시작을 하는 것이다.
+  # 핸들러를 통해 실행이 진행 되었을때 어떤 작업이 바뀌는지 확인하는 방법은
+
+  # 자바 jsp 스프링 스프링부트 장고 등등의 스펙을 가지면 더 좋을지도                                                            
