@@ -1,7 +1,7 @@
-data "terraform_remote_state" "aws00_vpc" {
+data "terraform_remote_state" "project03_vpc" {
     backend = "s3"
     config = {
-        bucket = "aws00-terraform-state"
+        bucket = "project03-terraform-state"
         key    = "infra/network/vpc/terraform.tfstate"
         region = "ap-northeast-2"
     }
