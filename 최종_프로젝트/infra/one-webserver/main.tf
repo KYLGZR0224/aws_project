@@ -14,12 +14,12 @@ resource "aws_instance" "example" {
               EOF
   # tags 추가
   tags = {
-    Name = "aws00-example"
+    Name = "project03-example"
   }
 }
 
 resource "aws_security_group" "instance" {
-  name = "aws00-terrafrom-example-instance"
+  name = "project03-terrafrom-example-instance"
   
   ingress {
     from_port    = var.server_port
