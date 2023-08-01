@@ -5,7 +5,7 @@ provider "aws" {
 # AWS launch configuration create
 resource "aws_launch_template" "example" {
 	name            = "aws00-example"
-  image_id        = "ami-0c6e5afdd23291f73"
+  image_id        = "ami-asdfzxcvasdf12345678"
   instance_type   = "t2.micro"
 	key_name        = "aws00-key"
   vpc_security_group_ids = [aws_security_group.instance.id]
@@ -16,7 +16,7 @@ resource "aws_launch_template" "example" {
     create_before_destroy = true
   }
 }
-
+ 
 # AWS auto scaling group create
 resource "aws_autoscaling_group" "example" {
 	availability_zones   = ["ap-northeast-2a", "ap-northeast-2c"] 

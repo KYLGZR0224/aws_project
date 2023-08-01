@@ -4,10 +4,10 @@ provider "aws" {
 # AWS 인스턴스 생성
 # AWS launch configuration create
 resource "aws_launch_template" "example" {
-  name                   = "aws00-example"
+  name                   = "project03-example"
   image_id               = "ami-0c6e5afdd23291f73"
   instance_type          = "t2.micro"
-  key_name               = "aws00-key"
+  key_name               = "aws15-home-key"
   vpc_security_group_ids = [aws_security_group.instance.id]
 
   user_data = base64encode(data.template_file.web_output.rendered)
@@ -24,7 +24,7 @@ resource "aws_autoscaling_group" "example" {
 # subnet 지정
 	vpc_zone_identifier = [var.subnet_public_1, var.subnet_public_2]
 
-  name             = "aws00-terraform-asg-example"
+  name             = "project03-terraform-asg-example"
   desired_capacity = 1
   min_size         = 1
   max_size         = 2
@@ -36,13 +36,13 @@ resource "aws_autoscaling_group" "example" {
 
   tag {
     key                 = "Name"
-    value               = "aws00-terraform-asg-example"
+    value               = "project03-terraform-asg-example"
     propagate_at_launch = true
   }
 }
 
 resource "aws_security_group" "instance" {
-  name   = "aws00-terrafrom-example-instance"
+  name   = "project03-terrafrom-example-instance"
 	vpc_id = var.vpc_id 
 
   ingress {
